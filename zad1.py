@@ -2,22 +2,19 @@ from scipy import ndimage
 import numpy as np
 import matplotlib.pyplot as plt
 
-
 def main():
-    textExamplePath = 'textExample.png'
-    ePath = 'foooo.png'
 
-    source = 255 - ndimage.imread(textExamplePath, flatten=True)
+    image_path = 'textExample.png'
+    di_path = 'di.png'
 
-    pattern = 255 - ndimage.imread(ePath, flatten=True)
+# flatten - convert to grey-scale
+    source = 255 - ndimage.imread(image_path, flatten=True)
+    pattern = 255 - ndimage.imread(di_path, flatten=True)
 
-
-
-    # plt.imshow(pattern, cmap='jet')
-    plt.imshow(source, cmap='jet')
-    # plt.savefig('foooo.png')
+#    plt.imshow(pattern, cmap='jet')
+    plt.imshow(source)
+    plt.savefig('foooo.png')
     plt.show()
-
 
     fi = np.fft.fft2(source)
     fp = np.fft.fft2(np.rot90(pattern, 2), fi.shape)
@@ -27,7 +24,9 @@ def main():
     corr = np.abs(corr)
     corr = corr.astype(float)
     #
-    corr[corr < 0.8 * np.amax(corr)] = 0
+
+    np.amax(corr)
+    corr[corr < (0.95 * np.amax(corr))] = 0
 
     suma = ndimage.label(corr)
     print(suma[1])
@@ -38,10 +37,9 @@ def main():
                 print(str(corr[i][j]) + ' ' + str(i) + ' ' + str(j), end=' ')
         print('')
 
-    plt.imshow(corr, cmap='jet')
+    plt.imshow(corr)
     plt.savefig('foo.png')
     plt.show()
-
 
 if __name__ == '__main__':
     main()
